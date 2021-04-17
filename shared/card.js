@@ -1,6 +1,11 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
+/**
+ * Generic card component for displaying items within a card item
+ * Currently used within the Goal items.
+ * @param {*} props view items to render within card.
+ */
 export default function Card(props) {
   return (
     <View style={styles.card}>

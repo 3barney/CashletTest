@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, {Component} from 'react';
 import {
   SafeAreaView,
@@ -18,85 +10,93 @@ import {
   Image,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
 import Card from './shared/card';
-import Snackbar from './shared/snackbar';
+import NotificationSnackbar from './notification/notification_snackbar';
+import {
+  messages,
+  goal_items,
+  time,
+  title_summary,
+  currency,
+  total_funds,
+  your_goals,
+  finish_goal,
+} from './utils/strings_en';
+import {
+  header,
+  subHeader,
+  body,
+  priceAmount,
+  verticalLineDivider,
+  baseButton,
+  submitButton,
+  rowDirections,
+  iconSize,
+  flexSize,
+} from './utils/styles_holder';
 
+/**
+ * Main application view holder
+ *
+ * NOTE
+ * Used a component struct to show familiriaty  with old react constructs the other NotificationSnackbar uses latest react constructs such as hooks
+ */
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      reviews: [
-        {
-          title: 'Goal 1',
-          amount: 'KES 12,000',
-        },
-        {
-          title: 'Goal 2',
-          amount: 'KES 12,000',
-        },
-      ],
+      show: false,
+      goals: goal_items,
+      message: messages,
     };
   }
 
-  showSnackBar = () => {
-    this.refs.mySnackBar.show('Hello World');
+  // Toggle snackbar by alternating state items
+  toggleSnackBar = () => {
+    this.setState({show: !this.state.show});
   };
 
   render() {
-    const {reviews} = this.state;
+    const {message, goals, show} = this.state;
     return (
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.MainContainer}>
           <View style={styles.SectionProfileHeader}>
-            <Text style={styles.SectionProfileHeaderMainText}>
-              Afternoon Jo
-            </Text>
+            <Text style={styles.SectionProfileHeaderMainText}>{time} Jo</Text>
             <Text style={styles.SectionProfileHeaderSubText}>
-              Here's the latest
+              {title_summary}
             </Text>
             <Text style={styles.SectionProfileHeaderMainTextGreen}>
-              KES 42,000
+              {currency} 42,000
             </Text>
-            <Text style={styles.SectionProfileHeaderSubText}>Total funds</Text>
+            <Text style={styles.SectionProfileHeaderSubText}>
+              {total_funds}
+            </Text>
           </View>
           <View style={styles.BodySummary}>
-            <Text style={styles.bodySummaryTitle}>Your Goals</Text>
+            <Text style={styles.bodySummaryTitle}>{your_goals}</Text>
             <View>
               <FlatList
-                data={reviews}
+                data={goals}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => (
                   <Card>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                      <View style={{flex: 1}}>
+                    <View style={{...rowDirections}}>
+                      <View style={{...flexSize}}>
                         <Text style={styles.bodySummaryTitle}>
                           {item.title}
                         </Text>
                         <Text style={styles.priceAmount}>{item.amount}</Text>
                       </View>
 
-                      <View
-                        style={{
-                          flex: 1,
-                          justifyContent: 'flex-end',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}>
+                      <View style={styles.finishGoalHolder}>
                         <TouchableOpacity style={styles.finishGoalButton}>
-                          <Text style={styles.finishGoal}>Finish Goal</Text>
+                          <Text style={styles.finishGoal}>{finish_goal}</Text>
                         </TouchableOpacity>
                         <View style={styles.verticleLine} />
                         <Image
-                          style={{height: 15, width: 15}}
+                          style={{...iconSize}}
                           source={require('./asset/arrow-forward/arrow-forward.png')}
                         />
                       </View>
@@ -108,21 +108,20 @@ class App extends Component {
             <View style={styles.SubmitSection}>
               <TouchableOpacity
                 style={styles.SubmitButton}
-                onPress={this.showSnackBar}
+                onPress={() => {
+                  this.toggleSnackBar();
+                }}
                 activeOpacity={0.8}>
                 <Text style={styles.SubmitText}>Show Snackbar</Text>
               </TouchableOpacity>
             </View>
-            <Snackbar
-              ref="mySnackBar"
-              closeText="close"
-              snackBarBackColor="rgba(0,0,0,0.8)"
-              closeTextColor="rgb(253,85,82)"
-              snackBarTextColor="white"
-              imageColor="rgb(253,85,82)"
-            />
           </View>
         </SafeAreaView>
+        <NotificationSnackbar
+          show={show}
+          message={message}
+          toggleSnackBar={this.toggleSnackBar}
+        />
       </>
     );
   }
@@ -137,53 +136,39 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+
   SectionProfileHeaderMainText: {
-    color: '#fff',
-    fontWeight: '400',
-    fontSize: 30,
+    ...header,
     marginTop: 20,
-    fontFamily: 'Roboto',
   },
+
   SectionProfileHeaderSubText: {
-    color: '#fff',
-    fontWeight: '300',
-    fontSize: 16,
+    ...subHeader,
     marginBottom: 10,
   },
+
   SectionProfileHeaderMainTextGreen: {
-    fontWeight: '600',
-    fontSize: 32,
-    fontFamily: 'Roboto',
+    ...header,
     color: '#00E771',
   },
 
   BodySummary: {
     flex: 3,
-    backgroundColor: '#F5FCFF',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
+    ...body,
   },
   bodySummaryTitle: {
-    fontFamily: 'Roboto',
+    ...subHeader,
     fontWeight: '400',
-    fontSize: 18,
     color: '#4A5C80',
   },
   priceAmount: {
-    fontWeight: '200',
-    fontSize: 14,
-    color: '#a9a9a9',
+    ...priceAmount,
   },
   listEnd: {
     alignItems: 'flex-end',
   },
   verticleLine: {
-    height: '100%',
-    width: 1,
-    backgroundColor: '#909090',
-    marginLeft: 10,
-    marginRight: 10,
+    ...verticalLineDivider,
   },
 
   SubmitSection: {
@@ -192,68 +177,26 @@ const styles = StyleSheet.create({
     marginBottom: 36,
   },
   SubmitButton: {
-    marginTop: 10,
-    paddingTop: 15,
-    paddingBottom: 15,
-    marginLeft: 30,
-    marginRight: 30,
-    elevation: 5,
-    backgroundColor: '#00E771',
-    borderRadius: 20,
-    borderColor: '#fff',
+    ...submitButton,
   },
   SubmitText: {
-    color: '#fff',
+    ...subHeader,
     fontWeight: '400',
-    fontSize: 20,
     textAlign: 'center',
   },
+  finishGoalHolder: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   finishGoalButton: {
-    backgroundColor: '#00E771',
-    borderRadius: 3,
-    padding: 5,
+    ...baseButton,
   },
   finishGoal: {
     color: '#fff',
     fontWeight: '100',
   },
-
-  // scrollView: {
-  //   backgroundColor: Colors.lighter,
-  // },
-  // engine: {
-  //   positio§n: 'absolute',
-  //   right: 0,
-  // },
-  // body: {
-  //   backgroundColor: Colors.white,
-  // },
-  // sectionContainer: {
-  //   marginTop: 32,
-  //   paddingHorizontal: 24,
-  // },
-  // sectionTitle: {
-  //   fontSize: 24,
-  //   fontWeight: '600',
-  //   color: Colors.black,
-  // },
-  // sectionDescription: {
-  //   marginTop: 8,
-  //   fontSize: 18,
-  //   fontWeight: '400',
-  //   color: Colors.dark,
-  // },
-  // highlight: {
-  //   fontWeight: '700',
-  // },
-  // footer: {
-  //   color: Colors.dark,
-  //   fontSize: 12,
-  //   fontWeight: '600',
-  //   padding: 4,
-  //   paddingRight: 12,
-  //   textAlign: 'right',
-  // },
 });
 
 export default App;
