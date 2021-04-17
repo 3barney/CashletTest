@@ -51,9 +51,9 @@ class App extends Component {
     };
   }
 
-  // Toggle snackbar by alternating state items
-  toggleSnackBar = () => {
-    this.setState({show: !this.state.show});
+  // Toggle snackbar show/unshow by alternating state items: show state is used to show snackbar
+  toggleSnackBar = (stateItem) => {
+    this.setState({show: stateItem});
   };
 
   render() {
@@ -109,7 +109,7 @@ class App extends Component {
               <TouchableOpacity
                 style={styles.SubmitButton}
                 onPress={() => {
-                  this.toggleSnackBar();
+                  this.toggleSnackBar(true);
                 }}
                 activeOpacity={0.8}>
                 <Text style={styles.SubmitText}>Show Snackbar</Text>

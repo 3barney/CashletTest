@@ -44,7 +44,7 @@ const NotificationSnackbar = (props) => {
 
     const timeoutHandler = setTimeout(() => {
       exitAnim.start(() => {
-        props.toggleSnackBar();
+        props.toggleSnackBar(false);
       });
     }, 10000);
     return () => {
@@ -58,7 +58,7 @@ const NotificationSnackbar = (props) => {
    */
   const exitAnimatedSnackbar = () => {
     exitAnim.start(() => {
-      props.toggleSnackBar();
+      props.toggleSnackBar(false);
     });
   };
 
